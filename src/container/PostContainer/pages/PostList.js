@@ -123,7 +123,7 @@ export default function PostList() {
                             stickyHeader
                             aria-label="sticky table"
                         >
-                             <TableHead>
+                            <TableHead>
                                 <TableRow>
                                     <StyledTableCell>Title</StyledTableCell>
                                     <StyledTableCell align="center">
@@ -141,6 +141,13 @@ export default function PostList() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
+                                {isEmpty(posts) && (
+                                    <TableRow>
+                                        <TableCell scope="row" align="center" colSpan={5}>
+                                            No Data
+                                        </TableCell>
+                                    </TableRow>
+                                )}
                                 {!isEmpty(posts) &&
                                     posts
                                         .slice(
@@ -153,8 +160,6 @@ export default function PostList() {
                                                 className={classes.tableTd}
                                             >
                                                 <TableCell
-                                                    component="th"
-                                                    scope="row"
                                                 >
                                                     {post.title}
                                                 </TableCell>
