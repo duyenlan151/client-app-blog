@@ -85,7 +85,7 @@ export default function PostList() {
     }, []);
 
     const openCreatePostModal = React.useCallback(() => {
-        history.push(`${match.path}/create`);
+        history.push(`/post/create`);
     }, [dispatch]);
 
     const [page, setPage] = React.useState(0);
@@ -176,7 +176,7 @@ export default function PostList() {
                                                         }
                                                         onClick={() =>
                                                             history.push(
-                                                                `${match.path}/${post._id}`
+                                                                `/post/${post._id}`
                                                             )
                                                         }
                                                         aria-label="delete"
