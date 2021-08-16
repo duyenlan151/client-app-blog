@@ -1,4 +1,4 @@
-import { Fab, TablePagination } from "@material-ui/core";
+import { Fab, TablePagination, Typography } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
@@ -116,6 +116,7 @@ export default function PostList() {
             <Spinner isLoading={isLoading} />
 
             <div className={classes.root}>
+                <Typography variant="h6">Duyen</Typography>
                 <Paper>
                     <TableContainer className={classes.container}>
                         <Table
