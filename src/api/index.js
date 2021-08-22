@@ -2,7 +2,7 @@ import request from 'utils/request'
 
 // const URL = 'http://localhost:5000';
 
-export const fetchPosts = () => request(`/posts`, {
+export const fetchPosts = ({ page, perPage}) => request(`/posts?page=${page}&perPage=${perPage}`, {
     method: 'get',
 })
 

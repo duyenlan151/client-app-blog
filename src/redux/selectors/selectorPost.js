@@ -1,4 +1,4 @@
-export const postsState$ = (state) => state.posts.data;
+export const postsState$ = (state) => state.posts;
 
 export const isLoading$ = (state) => state.posts.isLoading;
 

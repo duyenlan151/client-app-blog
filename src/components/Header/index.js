@@ -49,7 +49,7 @@ export default function Header() {
     return (
         <AppBar position="static" className={classes.header}>
             <Toolbar>
-                <NavLink to="/post" className={classes.dFlex}>
+                <NavLink to="/" className={classes.dFlex}>
                     <Typography variant="p" className={classes.title}>
                         CRUD POSTS
                     </Typography>

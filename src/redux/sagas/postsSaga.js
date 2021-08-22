@@ -3,10 +3,10 @@ import * as actions from '../actions';
 import * as api from './../../api';
 
 // Worker Sagas
-function* getPostsSaga() {
+function* getPostsSaga(action) {
     try {
-        const resPosts = yield call(api.fetchPosts);
-        yield put(actions.getPosts.getPostsSuccess(resPosts?.data))
+        const resPosts = yield call(api.fetchPosts, action.payload);
+        yield put(actions.getPosts.getPostsSuccess({ data: resPosts?.data, totalRecods:  resPosts?.totalRecods }))
     } catch (err) {
         yield put(actions.getPosts.getPostsFailure(err))
     }

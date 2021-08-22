@@ -16,9 +16,15 @@ import { isEmpty } from "lodash";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import {
+    useHistory,
+    useLocation,
+    useParams,
+    useRouteMatch,
+} from "react-router-dom";
 import * as actions from "redux/actions";
 import { isLoading$, postsState$ } from "redux/selectors/selectorPost";
+import queryString from "query-string";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -73,42 +79,38 @@ const StyledTableRow = withStyles((theme) => ({
 export default function PostList() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const posts = useSelector(postsState$);
+    const postsState = useSelector(postsState$);
 
     const isLoading = useSelector(isLoading$);
     const history = useHistory();
     const match = useRouteMatch();
-
-    useEffect(() => {
-        dispatch(actions.getPosts.getPostsRequest());
-        return () => {};
-    }, []);
+    const location = useLocation();
+    
+    const query = queryString.parse(location.search);
 
     const openCreatePostModal = React.useCallback(() => {
         history.push(`/post/create`);
     }, [dispatch]);
 
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const [page, setPage] = React.useState(+query?.page ? +query.page : 0);
+    const [perPage, setRowsPerPage] = React.useState(
+        +query?.perPage ? +query?.perPage : 10
+    );
+
+    useEffect(() => {
+        history.push({
+            pathname: `${match.url}`,
+            search: `?page=${page}&perPage=${perPage}`,
+        });
+        dispatch(actions.getPosts.getPostsRequest({ page, perPage }));
+    }, [page, perPage]);
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-
-        if (newPage)
-            history.push({
-                pathname: `${match.url}`,
-                search: `?page=${newPage}`,
-            });
-        else
-            history.push({
-                pathname: `${match.url}`,
-                search: null,
-            });
+        setPage(newPage)
     };
 
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
-        setPage(0);
     };
 
     return (
@@ -142,79 +144,71 @@ export default function PostList() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {isEmpty(posts) && (
+                                {isEmpty(postsState.data) && (
                                     <TableRow>
-                                        <TableCell scope="row" align="center" colSpan={5}>
+                                        <TableCell
+                                            scope="row"
+                                            align="center"
+                                            colSpan={5}
+                                        >
                                             No Data
                                         </TableCell>
                                     </TableRow>
                                 )}
-                                {!isEmpty(posts) &&
-                                    posts
-                                        .slice(
-                                            page * rowsPerPage,
-                                            page * rowsPerPage + rowsPerPage
-                                        )
-                                        .map((post, index) => (
-                                            <StyledTableRow
-                                                key={index}
-                                                className={classes.tableTd}
-                                            >
-                                                <TableCell
+                                {!isEmpty(postsState.data) &&
+                                    postsState.data.map((post, index) => (
+                                        <StyledTableRow
+                                            key={index}
+                                            className={classes.tableTd}
+                                        >
+                                            <TableCell>{post.title}</TableCell>
+                                            <TableCell align="center">
+                                                {post.type}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                {moment(post?.createdAt).format(
+                                                    "L"
+                                                )}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                {post.likeCount}
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <IconButton
+                                                    className={classes.primary}
+                                                    onClick={() =>
+                                                        history.push(
+                                                            `/post/${post._id}`
+                                                        )
+                                                    }
+                                                    aria-label="delete"
                                                 >
-                                                    {post.title}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {post.type}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {moment(
-                                                        post?.createdAt
-                                                    ).format("L")}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    {post.likeCount}
-                                                </TableCell>
-                                                <TableCell align="center">
-                                                    <IconButton
-                                                        className={
-                                                            classes.primary
-                                                        }
-                                                        onClick={() =>
-                                                            history.push(
-                                                                `/post/${post._id}`
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    className={classes.danger}
+                                                    onClick={() =>
+                                                        dispatch(
+                                                            actions.deletePost.deletePostRequest(
+                                                                post?._id
                                                             )
-                                                        }
-                                                        aria-label="delete"
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        className={
-                                                            classes.danger
-                                                        }
-                                                        onClick={() =>
-                                                            dispatch(
-                                                                actions.deletePost.deletePostRequest(
-                                                                    post?._id
-                                                                )
-                                                            )
-                                                        }
-                                                        aria-label="delete"
-                                                    >
-                                                        <DeleteIcon />
-                                                    </IconButton>
-                                                </TableCell>
-                                            </StyledTableRow>
-                                        ))}
+                                                        )
+                                                    }
+                                                    aria-label="delete"
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </StyledTableRow>
+                                    ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
                     <TablePagination
                         rowsPerPageOptions={[5, 10, 25, 100]}
                         component="div"
-                        count={posts.length}
-                        rowsPerPage={rowsPerPage}
+                        count={postsState.totalRecods}
+                        rowsPerPage={perPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
