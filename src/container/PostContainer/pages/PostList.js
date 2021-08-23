@@ -93,16 +93,25 @@ export default function PostList() {
     }, [dispatch]);
 
     const [page, setPage] = React.useState(+query?.page ? +query.page : 0);
-    const urlPage = page + 1;
     const [perPage, setRowsPerPage] = React.useState(
         +query?.perPage ? +query?.perPage : 10
     );
 
     useEffect(() => {
-        history.push({
-            pathname: `${match.url}`,
-            search: `?page=${urlPage}&perPage=${perPage}`,
-        });
+        if(page > 0){
+            history.push({
+                pathname: `${match.url}`,
+                // search: { ...options }
+                search: `?page=${page}&perPage=${perPage}`,
+            });
+        }else{
+            history.push({
+                pathname: `${match.url}`,
+                // search: { ...options }
+                search: `?perPage=${perPage}`,
+            });
+        }
+       
         dispatch(actions.getPosts.getPostsRequest({ page, perPage }));
     }, [page, perPage]);
 
