@@ -12,6 +12,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { BrowserRouter } from 'react-router-dom';
 import 'assets/main.scss'
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
 
 const sagaMiddlerare = createSagaMiddleware();
 
@@ -32,6 +33,7 @@ ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
       <App />
+      <ToastContainer />
     </BrowserRouter>
   </Provider>,
   document.getElementById('root')

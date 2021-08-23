@@ -14,18 +14,16 @@ import EditIcon from "@material-ui/icons/Edit";
 import Spinner from "components/Spinner";
 import { isEmpty } from "lodash";
 import moment from "moment";
+import queryString from "query-string";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import {
     useHistory,
-    useLocation,
-    useParams,
-    useRouteMatch,
+    useLocation, useRouteMatch
 } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as actions from "redux/actions";
 import { isLoading$, postsState$ } from "redux/selectors/selectorPost";
-import queryString from "query-string";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -99,18 +97,18 @@ export default function PostList() {
     );
 
     useEffect(() => {
-        if(page > 0){
+        if (page > 0) {
             history.push({
                 pathname: `${match.url}`,
                 search: `?page=${page}&perPage=${perPage}`,
             });
-        }else{
+        } else {
             history.push({
                 pathname: `${match.url}`,
                 search: `?perPage=${perPage}`,
             });
         }
-       
+
         dispatch(actions.getPosts.getPostsRequest({ page, perPage }));
     }, [page, perPage]);
 
@@ -122,10 +120,24 @@ export default function PostList() {
         setRowsPerPage(+event.target.value);
     };
 
+    const handleDeletePost = (id) => {
+        toast.success(
+            "Deleted!",
+            {
+                position:
+                    toast
+                        .POSITION
+                        .TOP_RIGHT,
+                className:
+                    "foo-bar",
+                autoClose: 2000,
+            }
+        );
+        dispatch(actions.deletePost.deletePostRequest(id));
+    }
+
     return (
         <>
-            <Spinner isLoading={isLoading} />
-
             <div className={classes.root}>
                 <Typography variant="h6">Duyen</Typography>
                 <Paper>
@@ -153,6 +165,18 @@ export default function PostList() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
+                                {isLoading && (
+                                    <TableRow>
+                                        <TableCell
+                                            scope="row"
+                                            align="center"
+                                            colSpan={5}
+                                        >
+                                            <Spinner isLoading={isLoading} />
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+
                                 {isEmpty(postsState.data) && (
                                     <TableRow>
                                         <TableCell
@@ -196,18 +220,7 @@ export default function PostList() {
                                                 </IconButton>
                                                 <IconButton
                                                     className={classes.danger}
-                                                    onClick={() => {
-                                                        dispatch(
-                                                            actions.deletePost.deletePostRequest(
-                                                                post?._id
-                                                            )
-                                                        )
-                                                        toast.success("Deleted!", {
-                                                            position: toast.POSITION.TOP_RIGHT,
-                                                            className: "foo-bar",
-                                                            autoClose: 2000,
-                                                        });
-                                                    }}
+                                                    onClick={() => handleDeletePost(post?._id)}
                                                     aria-label="delete"
                                                 >
                                                     <DeleteIcon />

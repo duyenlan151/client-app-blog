@@ -8,7 +8,7 @@ import FileBase64 from "react-file-base64";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { createPost, updatePost } from "redux/actions";
 import * as yup from "yup";
 import { makeStyles } from "@material-ui/core/styles";
@@ -152,7 +152,6 @@ export default function PostForm(props) {
                     <CircularProgress color="secondary" />
                 </div>
             )}
-            <ToastContainer />
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 method="post"
