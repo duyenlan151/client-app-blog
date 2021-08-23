@@ -114,7 +114,6 @@ export default function PostList() {
     }, [page, perPage]);
 
     const handleChangePage = (event, newPage) => {
-    console.log("🚀 ~ file: PostList.js ~ line 110 ~ handleChangePage ~ newPage", newPage)
         setPage(newPage);
     };
 
