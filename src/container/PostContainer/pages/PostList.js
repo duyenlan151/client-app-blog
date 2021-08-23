@@ -16,6 +16,7 @@ import { isEmpty } from "lodash";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import {
     useHistory,
     useLocation,
@@ -195,13 +196,18 @@ export default function PostList() {
                                                 </IconButton>
                                                 <IconButton
                                                     className={classes.danger}
-                                                    onClick={() =>
+                                                    onClick={() => {
                                                         dispatch(
                                                             actions.deletePost.deletePostRequest(
                                                                 post?._id
                                                             )
                                                         )
-                                                    }
+                                                        toast.success("Deleted!", {
+                                                            position: toast.POSITION.TOP_RIGHT,
+                                                            className: "foo-bar",
+                                                            autoClose: 2000,
+                                                        });
+                                                    }}
                                                     aria-label="delete"
                                                 >
                                                     <DeleteIcon />
