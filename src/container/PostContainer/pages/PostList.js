@@ -101,13 +101,11 @@ export default function PostList() {
         if(page > 0){
             history.push({
                 pathname: `${match.url}`,
-                // search: { ...options }
                 search: `?page=${page}&perPage=${perPage}`,
             });
         }else{
             history.push({
                 pathname: `${match.url}`,
-                // search: { ...options }
                 search: `?perPage=${perPage}`,
             });
         }
