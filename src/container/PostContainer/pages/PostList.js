@@ -122,7 +122,7 @@ export default function PostList() {
 
     const handleDeletePost = (id) => {
         toast.success(
-            "Deleted!",
+            "Delete success",
             {
                 position:
                     toast
