@@ -85,7 +85,7 @@ export default function PostList() {
     const history = useHistory();
     const match = useRouteMatch();
     const location = useLocation();
-    
+
     const query = queryString.parse(location.search);
 
     const openCreatePostModal = React.useCallback(() => {
@@ -93,6 +93,7 @@ export default function PostList() {
     }, [dispatch]);
 
     const [page, setPage] = React.useState(+query?.page ? +query.page : 0);
+    const urlPage = page + 1;
     const [perPage, setRowsPerPage] = React.useState(
         +query?.perPage ? +query?.perPage : 10
     );
@@ -100,13 +101,14 @@ export default function PostList() {
     useEffect(() => {
         history.push({
             pathname: `${match.url}`,
-            search: `?page=${page}&perPage=${perPage}`,
+            search: `?page=${urlPage}&perPage=${perPage}`,
         });
         dispatch(actions.getPosts.getPostsRequest({ page, perPage }));
     }, [page, perPage]);
 
     const handleChangePage = (event, newPage) => {
-        setPage(newPage)
+    console.log("🚀 ~ file: PostList.js ~ line 110 ~ handleChangePage ~ newPage", newPage)
+        setPage(newPage);
     };
 
     const handleChangeRowsPerPage = (event) => {
